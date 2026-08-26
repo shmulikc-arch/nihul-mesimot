@@ -8,12 +8,12 @@
 // ============================================================================
 
 const firebaseConfig = {
-  apiKey: "REPLACE_ME",
-  authDomain: "REPLACE_ME.firebaseapp.com",
-  projectId: "REPLACE_ME",
-  storageBucket: "REPLACE_ME.appspot.com",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME",
+  apiKey: "AIzaSyAFyI3XLHYWRGJzddoRLfkEySrIRg-ZpT0",
+  authDomain: "moked-takalot.firebaseapp.com",
+  projectId: "moked-takalot",
+  storageBucket: "moked-takalot.firebasestorage.app",
+  messagingSenderId: "545424996710",
+  appId: "1:545424996710:web:71a6f46276f50c7bcb30a7",
 };
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
