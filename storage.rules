@@ -1,0 +1,28 @@
+// ============================================================================
+// חוקי אבטחה ל-Storage (תמונות של תקלות)
+// איך מתקינים: Firebase Console -> Storage -> לשונית "Rules" ->
+// להדביק את כל התוכן הזה במקום מה שיש שם -> Publish.
+// (דורש שהפרויקט יהיה על תוכנית Blaze כדי ש-Storage יהיה זמין בכלל)
+// ============================================================================
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // תמונות תקלות נשמרות בנתיב tickets/{uid-של-המדווח}/...
+    // רק בעל התמונה יכול להעלות אליה, וכל משתמש מחובר יכול לצפות בתמונה
+    // (כי בעל התפקיד שמטפל בתקלה צריך לראות אותה).
+    match /tickets/{uid}/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size < 8 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // כל דבר אחר - חסום כברירת מחדל
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,60 @@
+// ============================================================================
+// חוקי אבטחה ל-Firestore
+// איך מתקינים: Firebase Console -> Firestore Database -> לשונית "Rules" ->
+// להדביק את כל התוכן הזה במקום מה שיש שם -> Publish.
+// ============================================================================
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // שולף את התפקיד של המשתמש המחובר ממסמך users/{uid}
+    function myRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // --------------------------------------------------------------------
+    // users - פרופיל התפקיד של כל משתמש. נוצר ונערך רק ידנית דרך הקונסולה
+    // על ידי מנהל המערכת, ולא דרך האפליקציה - לכן אין הרשאת כתיבה מהלקוח.
+    // --------------------------------------------------------------------
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || myRole() == 'admin');
+      allow write: if false;
+    }
+
+    // --------------------------------------------------------------------
+    // tickets - התקלות עצמן
+    // --------------------------------------------------------------------
+    match /tickets/{ticketId} {
+
+      // קריאה: המדווח/ת רואה את הדיווח שלה, בעל התפקיד המשויך רואה את שלו,
+      // ומנהל המערכת רואה הכל.
+      allow read: if isSignedIn() && (
+        resource.data.reporterUid == request.auth.uid ||
+        myRole() == resource.data.assignedRole ||
+        myRole() == 'admin'
+      );
+
+      // יצירה: כל משתמש מחובר יכול ליצור דיווח, אך רק על שמו האמיתי,
+      // עם סטטוס פתיחה תקין ושיוך לאחד משלושת הגורמים המוכרים.
+      allow create: if isSignedIn() &&
+        request.resource.data.reporterUid == request.auth.uid &&
+        request.resource.data.status == 'open' &&
+        request.resource.data.assignedRole in ['facilities', 'it', 'secretary'];
+
+      // עדכון: רק בעל התפקיד המשויך לתקלה (או מנהל המערכת) יכול לעדכן אותה -
+      // בפועל זה משמש לשינוי סטטוס (פתוח / בטיפול / טופל).
+      allow update: if isSignedIn() && (
+        myRole() == resource.data.assignedRole ||
+        myRole() == 'admin'
+      );
+
+      // מחיקה: שמורה למנהל המערכת בלבד.
+      allow delete: if isSignedIn() && myRole() == 'admin';
+    }
+  }
+}
