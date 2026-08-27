@@ -1,6 +1,6 @@
 {
-  "name": "מוקד תקלות",
-  "short_name": "מוקד תקלות",
+  "name": "ניהול משימות",
+  "short_name": "ניהול משימות",
   "description": "דיווח וניהול תקלות בבית הספר",
   "start_url": "./index.html",
   "scope": "./",
