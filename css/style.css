@@ -270,3 +270,8 @@ tr:last-child td { border-bottom: none; }
   padding: 10px 14px;
   font-weight: 600;
 }
+.delete-btn {
+  background: none; border: none; cursor: pointer; font-size: 15px;
+  color: var(--muted); padding: 4px 8px; border-radius: 8px; flex-shrink: 0;
+}
+.delete-btn:hover { background: var(--st-open-bg); color: var(--st-open-tx); }
