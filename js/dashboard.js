@@ -63,7 +63,7 @@ export function initDashboard({ role, roleLabel, roleIconSvg }) {
       <div class="ticket" data-id="${t.id}">
         <div class="thumb">
           ${t.photoUrl
-            ? `<img src="${t.photoUrl}" class="thumb" alt="תמונת התקלה">`
+                        ? `<a href="${t.photoUrl}" target="_blank" rel="noopener"><img src="${t.photoUrl}" class="thumb" alt="תמונת התקלה"></a>`
             : `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="m21 15-5-5-9 9"/></svg>`}
         </div>
         <div class="t-main">
