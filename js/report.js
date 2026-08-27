@@ -1,5 +1,5 @@
 import { db, storage } from "./firebase-config.js";
-import { requireRole, logout, relativeTime } from "./auth.js";
+import { requireAuth, ROLE_PAGES, logout, relativeTime } from "./auth.js";
 import {
   collection, addDoc, query, where, onSnapshot, serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
@@ -140,10 +140,16 @@ function escapeHtml(str) {
 
 let currentProfileName = "";
 
-requireRole("teacher").then(({ user, profile }) => {
+requireAuth().then(({ user, profile }) => {
   currentUser = user;
   currentProfileName = profile.name || "";
   document.getElementById("user-name").textContent = profile.name || user.email;
+
+  if (profile.role !== "teacher") {
+    const backLink = document.getElementById("back-link");
+    backLink.href = ROLE_PAGES[profile.role] || "index.html";
+    backLink.hidden = false;
+  }
 
   const q = query(collection(db, "tickets"), where("reporterUid", "==", user.uid));
   onSnapshot(q, (snap) => {
