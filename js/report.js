@@ -103,6 +103,8 @@ form.addEventListener("submit", async (e) => {
     photoInput.value = "";
     preview.hidden = true;
     uploadZone.hidden = false;
+     document.getElementById("success-box").hidden = false;
+    setTimeout(() => { document.getElementById("success-box").hidden = true; }, 4000);
   } catch (err) {
     console.error(err);
     errorBox.textContent = "אירעה שגיאה בשליחת הדיווח. נסה/י שוב.";
