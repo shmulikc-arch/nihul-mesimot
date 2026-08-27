@@ -263,3 +263,11 @@ tr:last-child td { border-bottom: none; }
   .header, .toolbar, .body-area { padding-left: 40px; padding-right: 40px; }
   .body-area { max-width: 1200px; margin: 0 auto; width: 100%; }
 }
+.success-msg {
+  background: #e5f6ee;
+  color: #0f7350;
+  border: 1px solid #0ca30c;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+}
