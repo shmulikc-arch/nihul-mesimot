@@ -1,7 +1,7 @@
 import { db, storage } from "./firebase-config.js";
 import { requireAuth, ROLE_PAGES, logout, relativeTime } from "./auth.js";
 import {
-  collection, addDoc, query, where, onSnapshot, serverTimestamp,
+  collection, addDoc, query, where, onSnapshot, serverTimestamp, doc, deleteDoc,
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 import {
   ref, uploadBytes, getDownloadURL,
@@ -129,8 +129,23 @@ function renderRecent(tickets) {
         <div class="meta">${escapeHtml(roleLabel(t.assignedRole))} · ${relativeTime(t.createdAt)}</div>
       </div>
       <span class="badge ${STATUS_CLASS[t.status] || "open"}">${STATUS_LABELS[t.status] || "פתוח"}</span>
+      ${t.status === "open" ? `<button class="delete-btn" data-id="${t.id}" title="מחיקת דיווח">🗑</button>` : ""}
     </div>
   `).join("");
+
+  list.querySelectorAll(".delete-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!confirm("למחוק את הדיווח הזה?")) return;
+      btn.disabled = true;
+      try {
+        await deleteDoc(doc(db, "tickets", btn.dataset.id));
+      } catch (err) {
+        console.error(err);
+        alert("אירעה שגיאה במחיקת הדיווח.");
+        btn.disabled = false;
+      }
+    });
+  });
 }
 
 function roleLabel(role) {
