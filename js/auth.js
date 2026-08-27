@@ -65,6 +65,25 @@ export function requireRole(expectedRole) {
   });
 }
 
+// כמו requireRole, אבל לכל משתמש מחובר עם תפקיד תקין - בלי הגבלה לתפקיד ספציפי
+export function requireAuth() {
+  return new Promise((resolve) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        location.href = "index.html";
+        return;
+      }
+      const profile = await getUserProfile(user.uid);
+      if (!profile || !profile.role) {
+        alert("החשבון שלך קיים אך עדיין לא הוגדר תפקיד במערכת. יש לפנות למנהל המערכת.");
+        await signOut(auth);
+        location.href = "index.html";
+        return;
+      }
+      resolve({ user, profile });
+    });
+  });
+}
 export async function logout() {
   await signOut(auth);
   location.href = "index.html";
